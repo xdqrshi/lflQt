@@ -6,233 +6,200 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>688</width>
-    <height>563</height>
+    <width>847</width>
+    <height>680</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Qt5Demo</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="label_3">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>18</x>
-      <y>100</y>
-      <width>66</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>频率(kHz)：</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="le_Freq">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>99</y>
-      <width>51</width>
-      <height>19</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="le_PhaseOffset">
-    <property name="geometry">
-     <rect>
-      <x>515</x>
-      <y>99</y>
-      <width>81</width>
-      <height>19</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>101</y>
-      <width>71</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>相位差(度)：</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>18</x>
-      <y>131</y>
-      <width>66</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ADC值：</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="le_ADC">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>130</y>
-      <width>61</width>
-      <height>19</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="graphicsView">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>160</y>
-      <width>651</width>
-      <height>331</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
+      <x>10</x>
+      <y>10</y>
       <width>463</width>
-      <height>25</height>
+      <height>349</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>设备IP：</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>设备IP：</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="le_ipAddr"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>端口号：</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="le_ipPort"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pb_OpenDevice">
+           <property name="text">
+            <string>打开设备</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QLineEdit" name="le_ipAddr"/>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="pb_MifOpen">
+             <property name="text">
+              <string>打开mif文件</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_MifFile"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>ADC值：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_ADC">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>频率(kHz)：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_Freq"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>输出功率：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_Power"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>延时(us)：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_Delay"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>相位差(度)：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="le_PhaseOffset">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <widget class="QChartView" name="graphicsView"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QPushButton" name="pb_SendConfig">
          <property name="text">
-          <string>端口号：</string>
+          <string>发送配置信息</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="le_ipPort"/>
+        <widget class="QPushButton" name="pb_WavePreview">
+         <property name="text">
+          <string>波形预览</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_PowerOn">
+         <property name="text">
+          <string>打开电源</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_StartWork">
+         <property name="text">
+          <string>开始工作</string>
+         </property>
+        </widget>
        </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pb_OpenDevice">
-       <property name="text">
-        <string>打开设备</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QLineEdit" name="le_Delay">
-    <property name="geometry">
-     <rect>
-      <x>346</x>
-      <y>100</y>
-      <width>81</width>
-      <height>19</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="le_Power">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>100</y>
-      <width>71</width>
-      <height>19</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>100</y>
-      <width>60</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>输出功率：</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>100</y>
-      <width>60</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>延时(us)：</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>19</x>
-      <y>58</y>
-      <width>543</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QPushButton" name="pb_MifOpen">
-       <property name="text">
-        <string>打开mif文件</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="le_MifFile"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pb_SendConfig">
-       <property name="text">
-        <string>发送配置信息</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pb_WavePreview">
-       <property name="text">
-        <string>波形预览</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pb_PowerOn">
-       <property name="text">
-        <string>打开电源</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pb_StartWork">
-       <property name="text">
-        <string>开始工作</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </widget>
@@ -242,7 +209,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>688</width>
+     <width>847</width>
      <height>22</height>
     </rect>
    </property>
@@ -258,8 +225,120 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QChartView</class>
+   <extends>QGraphicsView</extends>
+   <header>qchartview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="Qt5Demo.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pb_SendConfig</sender>
+   <signal>clicked()</signal>
+   <receiver>Qt5DemoClass</receiver>
+   <slot>on_pbSendConfig_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>384</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>65</x>
+     <y>406</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_WavePreview</sender>
+   <signal>clicked()</signal>
+   <receiver>Qt5DemoClass</receiver>
+   <slot>on_pbWavePreview_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>380</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>195</x>
+     <y>405</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_PowerOn</sender>
+   <signal>clicked()</signal>
+   <receiver>Qt5DemoClass</receiver>
+   <slot>on_pbPowerOn_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>311</x>
+     <y>384</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>311</x>
+     <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_StartWork</sender>
+   <signal>clicked()</signal>
+   <receiver>Qt5DemoClass</receiver>
+   <slot>on_pbStartWork_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>431</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>433</x>
+     <y>404</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_MifOpen</sender>
+   <signal>clicked()</signal>
+   <receiver>Qt5DemoClass</receiver>
+   <slot>on_pbMifOpen_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>48</x>
+     <y>88</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>56</x>
+     <y>39</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pb_OpenDevice</sender>
+   <signal>clicked()</signal>
+   <receiver>Qt5DemoClass</receiver>
+   <slot>on_pbOpenDevice_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>448</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>370</x>
+     <y>40</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>on_pbSendConfig_clicked()</slot>
+  <slot>on_pbWavePreview_clicked()</slot>
+  <slot>on_pbPowerOn_clicked()</slot>
+  <slot>on_pbStartWork_clicked()</slot>
+  <slot>on_pbMifOpen_clicked()</slot>
+  <slot>on_pbOpenDevice_clicked()</slot>
+ </slots>
 </ui>
