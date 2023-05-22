@@ -99,19 +99,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="pb_Start">
-   <property name="geometry">
-    <rect>
-     <x>560</x>
-     <y>30</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>开始采集</string>
-   </property>
-  </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
@@ -176,6 +163,19 @@
     </item>
    </layout>
   </widget>
+  <widget class="QPushButton" name="pbBegin">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>30</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>开始采集</string>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
@@ -187,23 +187,23 @@
  <resources/>
  <connections>
   <connection>
-   <sender>pb_Start</sender>
+   <sender>pbBegin</sender>
    <signal>clicked()</signal>
    <receiver>Form</receiver>
-   <slot>on_pb_Start_clicked()</slot>
+   <slot>on_pbStart_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>600</x>
-     <y>43</y>
+     <x>634</x>
+     <y>44</y>
     </hint>
     <hint type="destinationlabel">
-     <x>632</x>
-     <y>76</y>
+     <x>725</x>
+     <y>69</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>on_pb_Start_clicked()</slot>
+  <slot>on_pbStart_clicked()</slot>
  </slots>
 </ui>
