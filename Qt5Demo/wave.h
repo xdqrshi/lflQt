@@ -6,6 +6,10 @@
 #include <QtCharts/qchartview.h>
 #include <QtCharts/qsplineseries.h>
 #include <qvalueaxis.h>
+#include <QtSerialPort/qserialport.h>
+#include <QtSerialPort/qserialportinfo.h>
+#include <qqueue.h>
+#include <qtimer.h>
 
 class wave : public QWidget
 {
@@ -36,6 +40,9 @@ public:
 	QValueAxis* ch3_axisX;
 	QValueAxis* ch3_axisY;
 
+	QSerialPort serial;
+	QQueue<QByteArray> queue;
+	QTimer timer;
 public slots:
 	void on_pbStart_clicked();
 
