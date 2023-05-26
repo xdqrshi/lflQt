@@ -24,7 +24,7 @@ Qt5Demo::Qt5Demo(QWidget *parent)
 
     //targetAddress = QHostAddress("192.168.3.75");
     //targetPort = 5001;
-    ui.le_ipAddr->setText("192.168.1.10");
+    ui.le_ipAddr->setText("192.168.3.75");
     ui.le_ipPort->setText("5001");
     udpSocket->bind(targetAddress, targetPort);
     cnt = 0;
@@ -44,7 +44,7 @@ void Qt5Demo::on_pbSendConfig_clicked()
     QDataStream out(&ba, QIODevice::WriteOnly);
 
     //m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toUInt()) / (ui.le_Freq->text().toUInt()) / 360);
-    m_PhaseDelay = (m_Fclk * (ui.le_PhaseOffset->text().toUInt()) / (ui.le_Freq->text().toUInt()) / 360);
+    m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
     m_DDSTime = vMifValue.size();
     m_ModeVal = 0xbbbbbb;
     out << m_FramHead;
