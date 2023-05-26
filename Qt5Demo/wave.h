@@ -43,6 +43,8 @@ public:
 	QSerialPort serial;
 	QQueue<QByteArray> queue;
 	QTimer timer;
+	QFile file;
+	QByteArray buf;
 public slots:
 	void on_pbStart_clicked();
 

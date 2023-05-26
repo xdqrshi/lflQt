@@ -31,7 +31,7 @@ wave::wave(QWidget *parent)
 	ch3_chart = new QChart();
 
 
-	serial.setPortName("COM7");
+	serial.setPortName("COM6");
 	serial.setBaudRate(QSerialPort::Baud115200);
 	serial.setDataBits(QSerialPort::Data8);
 	serial.setParity(QSerialPort::NoParity);
@@ -39,24 +39,32 @@ wave::wave(QWidget *parent)
 	serial.setFlowControl(QSerialPort::NoFlowControl);
 	serial.setReadBufferSize(6 * 4096 * 10);
 
-
+	 
 	if (serial.open(QIODevice::ReadWrite))
 		qDebug() << "Open success!";
 	else
 		qDebug() << "Open failed!";
 
 
-	//QFile file("123.txt");
-	//file.open(QIODevice::WriteOnly);
-	//timer.setInterval(100);
-	//timer.start();
-	//QObject::connect(&timer, &QTimer::timeout, [&]() {
-	//	QByteArray data = serial.read(6 * 4096);
-	//	QList<QByteArray> lines = data.split('\r\n');
-	//	for (const QByteArray& line : lines) {
-	//		file.write(line);
-	//	}
-	//});
+	//QByteArray buf;
+	file.setFileName("123.txt");
+	file.open(QIODevice::WriteOnly);
+	//QByteArray da("HELLO");
+	//file.write(da);
+	timer.setInterval(100);
+	timer.start();
+	QObject::connect(&timer, &QTimer::timeout, [&]() {
+		//QByteArray data = serial.read(6 * 4096);
+		QByteArray da = serial.readAll();
+		buf.append(da);
+		//file.write(da);
+		//QList<QByteArray> lines = data.split('\n');
+		//for (QByteArray line : lines) {
+		//	file.write(line);
+		//	qDebug() << line;
+		//}
+		});
+
 }
 
 wave::~wave()
@@ -66,19 +74,9 @@ wave::~wave()
 void wave::on_pbStart_clicked()
 {
 
-	QFile file("123.txt");
-	file.open(QIODevice::WriteOnly);
-	timer.setInterval(100);
-	timer.start();
-	QObject::connect(&timer, &QTimer::timeout, [&]() {
-		//QByteArray data = serial.read(6 * 4096);
-		QByteArray data = serial.readAll();
-		QList<QByteArray> lines = data.split("\r\n");
-		for (const QByteArray& line : lines) {
-			//file.write(line);
-			qDebug() << line;
-		}
-	});
+	timer.stop();
+	file.write(buf);
+	file.close();
 
 
 

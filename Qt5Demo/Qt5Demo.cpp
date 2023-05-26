@@ -2,7 +2,11 @@
 #include "qnetworkdatagram.h"
 #include "qfile.h"
 #include "qfiledialog.h"
+#include "qendian.h"
 
+#if _MSC_VER >= 1600
+#pragma execution_character_set("utf-8");
+#endif // _MSC_VER >= 1600
 
 
 Qt5Demo::Qt5Demo(QWidget *parent)
@@ -16,9 +20,12 @@ Qt5Demo::Qt5Demo(QWidget *parent)
     m_lineSeries_A = new QSplineSeries();
     m_lineSeries_B = new QSplineSeries();
     m_chart = new QChart();
+    m_Fclk = 100000;
 
-    targetAddress = QHostAddress("192.168.3.75");
-    targetPort = 5001;
+    //targetAddress = QHostAddress("192.168.3.75");
+    //targetPort = 5001;
+    ui.le_ipAddr->setText("192.168.1.10");
+    ui.le_ipPort->setText("5001");
     udpSocket->bind(targetAddress, targetPort);
     cnt = 0;
     timer = new QTimer();
@@ -36,6 +43,8 @@ void Qt5Demo::on_pbSendConfig_clicked()
     QByteArray ba;
     QDataStream out(&ba, QIODevice::WriteOnly);
 
+    //m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toUInt()) / (ui.le_Freq->text().toUInt()) / 360);
+    m_PhaseDelay = (m_Fclk * (ui.le_PhaseOffset->text().toUInt()) / (ui.le_Freq->text().toUInt()) / 360);
     m_DDSTime = vMifValue.size();
     m_ModeVal = 0xbbbbbb;
     out << m_FramHead;
@@ -228,16 +237,18 @@ void Qt5Demo::on_pbOpenDevice_clicked()
     quint32 cmd;
     QByteArray ba;
     QDataStream out(&ba, QIODevice::WriteOnly);
-    //targetAddress = QHostAddress("192.168.3.75");
+    //targetAddress = QHostAddress("192.168.1.10");
     //targetPort = 5001;
-    if (ui.pb_OpenDevice->text()=="打开设备")
+    QString tmp = "打开设备";
+    QString tmp2 = ui.pb_OpenDevice->text();
+    if (ui.pb_OpenDevice->text() == "打开设备")
     {
         targetAddress = QHostAddress(ui.le_ipAddr->text());
         targetPort = ui.le_ipPort->text().toUShort(&ok, 10);
         if (ok)
         {
             udpSocket->bind(targetAddress, targetPort);
-            cmd = 0x12345678;
+            cmd = qToBigEndian(0x12345678);
             out << cmd;
             udpSocket->writeDatagram(ba, targetAddress, targetPort);
         }
