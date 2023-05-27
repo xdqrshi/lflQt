@@ -14,6 +14,7 @@ Qt5Demo::Qt5Demo(QWidget *parent)
 {
     ui.setupUi(this);
     //connect(this, &ui.pb_SendConfig->clicked(), this, this->on_pbSendConfig());
+    ParaInit();
     udpSocket = new QUdpSocket(this);
     m_axisX = new QValueAxis();
     m_axisY = new QValueAxis();
@@ -24,11 +25,13 @@ Qt5Demo::Qt5Demo(QWidget *parent)
 
     //targetAddress = QHostAddress("192.168.3.75");
     //targetPort = 5001;
-    ui.le_ipAddr->setText("192.168.3.75");
+    ui.le_ipAddr->setText("192.168.1.10");
+    //ui.le_ipAddr->setText("127.0.0.1");
     ui.le_ipPort->setText("5001");
     udpSocket->bind(targetAddress, targetPort);
     cnt = 0;
     timer = new QTimer();
+    timer->start(5000);
     connect(timer, SIGNAL(timeout()), this, SLOT(on_Timeout()));
 
 
@@ -40,38 +43,62 @@ Qt5Demo::~Qt5Demo()
 
 void Qt5Demo::on_pbSendConfig_clicked()
 {
+
+    m_ModeVal = 0;
+    m_t1 = 50;
+    m_t2 = 70;
+    m_t3 = 50;
+    m_t4 = 50;
+    m_t5 = 300;
+    m_t6 = 0;
+    m_t7 = 20;
+    m_t8 = 30;
+    m_PhaseDelay = 0;
+    m_CycleTimes = 5;
+    m_CycleDelay = 10;
+    m_PowerOut = 10;
+    m_Fctrl = 0;
+    m_Pctrl = 0;
+    m_Fclk = 100000;
+    m_DDSTime = 0;
+    m_FramHead = 0x5a5a5a5a;
+    m_FramTail = 0xa5a5a5a5;
+
+
+
+
     QByteArray ba;
     QDataStream out(&ba, QIODevice::WriteOnly);
 
     //m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toUInt()) / (ui.le_Freq->text().toUInt()) / 360);
     m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
     m_DDSTime = vMifValue.size();
-    m_ModeVal = 0xbbbbbb;
-    out << m_FramHead;
-    out << m_ModeVal;
-    out << m_t1;
-    out << m_t2;
-    out << m_t3;
-    out << m_t4;
-    out << m_t5;
+    m_ModeVal = 0x01bbbbbb;
+    out << qToBigEndian(m_FramHead);
+    out << qToBigEndian(m_ModeVal);
+    out << qToBigEndian(m_t1);
+    out << qToBigEndian(m_t2);
+    out << qToBigEndian(m_t3);
+    out << qToBigEndian(m_t4);
+    out << qToBigEndian(m_t5);
     m_t6 = m_DDSTime - m_t7;
-    out << m_t6;
-    out << m_t7;
-    out << m_t8;
-    out << m_PhaseDelay;
-    out << m_CycleTimes;
-    out << m_CycleDelay;
-    out << m_PowerOut;
-    out << m_Fctrl;
-    out << m_Pctrl;
-    out << vMifValue.size();
+    out << qToBigEndian(m_t6);
+    out << qToBigEndian(m_t7);
+    out << qToBigEndian(m_t8);
+    out << qToBigEndian(m_PhaseDelay);
+    out << qToBigEndian(m_CycleTimes);
+    out << qToBigEndian(m_CycleDelay);
+    out << qToBigEndian(m_PowerOut);
+    out << qToBigEndian(m_Fctrl);
+    out << qToBigEndian(m_Pctrl);
+    out << qToBigEndian(static_cast<quint32>(vMifValue.size()));
     for (int i = 0; i < vMifValue.size(); i++)
     {
-        out << vMifValue[i];
+        out << qToBigEndian(vMifValue[i]);
     }
-    out << m_FramTail;
+    out << qToBigEndian(m_FramTail);
 
-    timer->start(5000);
+
     udpSocket->writeDatagram(ba, targetAddress, targetPort);
     qDebug() << "enter sendconfig";
 }
@@ -81,9 +108,9 @@ void Qt5Demo::on_pbPowerOn_clicked()
     quint32 cmd;
     QByteArray ba;
     QDataStream out(&ba, QIODevice::WriteOnly);
-    m_ModeVal = 0xaaaaaa;
-    out << m_FramHead;
-    out << m_ModeVal;
+    m_ModeVal = 0x01aaaaaa;
+    out << qToBigEndian(m_FramHead);
+    out << qToBigEndian(m_ModeVal);
     if (ui.pb_PowerOn->text() == "打开电源")
     {
         cmd = (0xeeee << 16) | (0x01 & 0xffff);
@@ -95,8 +122,8 @@ void Qt5Demo::on_pbPowerOn_clicked()
         ui.pb_PowerOn->setText("打开电源");
     }
     
-    out << cmd;
-    out << m_FramTail;
+    out << qToBigEndian(cmd);
+    out << qToBigEndian(m_FramTail);
     udpSocket->writeDatagram(ba, targetAddress, targetPort);
 
     timer->stop();
@@ -108,9 +135,9 @@ void Qt5Demo::on_pbStartWork_clicked()
     quint32 cmd;
     QByteArray ba;
     QDataStream out(&ba, QIODevice::WriteOnly);
-    m_ModeVal = 0xaaaaaa;
-    out << m_FramHead;
-    out << m_ModeVal;
+    m_ModeVal = 0x02aaaaaa;
+    out << qToBigEndian(m_FramHead);
+    out << qToBigEndian(m_ModeVal);
     if (ui.pb_StartWork->text() == "开始工作")
     {
         cmd = (0xdddd << 16) | (0x01 & 0xffff);
@@ -122,8 +149,8 @@ void Qt5Demo::on_pbStartWork_clicked()
         ui.pb_StartWork->setText("开始工作");
     }
 
-    out << cmd;
-    out << m_FramTail;
+    out << qToBigEndian(cmd);
+    out << qToBigEndian(m_FramTail);
     udpSocket->writeDatagram(ba, targetAddress, targetPort);
 
 
@@ -171,7 +198,7 @@ void Qt5Demo::on_Timeout()
     qDebug() << "cnt=" << cnt;
 }
 
-int Qt5Demo::ParseMifFile(QString fileName,QVector<quint16> &vec)
+int Qt5Demo::ParseMifFile(QString fileName,QVector<quint32> &vec)
 {
     QFile file(fileName);
     bool flag = false;
@@ -202,7 +229,7 @@ int Qt5Demo::ParseMifFile(QString fileName,QVector<quint16> &vec)
                 unsigned short s = strList[1].toUShort(&ok);
                 if (ok)
                 {
-                    quint16 i = static_cast<quint16>(s);
+                    quint32 i = static_cast<quint32>(s);
                     vec.push_back(i);
                 }
             }

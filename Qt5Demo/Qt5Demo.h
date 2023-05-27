@@ -19,7 +19,7 @@ public:
     ~Qt5Demo();
 
 public:
-    int ParseMifFile(QString fileName, QVector<quint16>& vec);
+    int ParseMifFile(QString fileName, QVector<quint32>& vec);
     
 public:
     QUdpSocket* udpSocket;
@@ -30,7 +30,7 @@ public:
     quint32 cnt;
     QString fileName;
     QString filePath;
-    QVector<quint16> vMifValue;
+    QVector<quint32> vMifValue;
 
 public slots:
     void on_pbSendConfig_clicked();
@@ -48,7 +48,7 @@ public:
     QValueAxis* m_axisY;
 
 
-private:
+public:
     quint32 m_Fclk;
     quint32 m_DDSTime;
     quint32 m_t1, m_t2, m_t3, m_t4, m_t5, m_t6, m_t7, m_t8;
