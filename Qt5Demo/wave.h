@@ -23,20 +23,17 @@ public:
 	QVector<quint32> ch1, ch2, ch3;
 
 	QChart* ch1_chart;
-	QSplineSeries* ch1_lineSeries_A;
-	QSplineSeries* ch1_lineSeries_B;
+	QSplineSeries* ch1_lineSeries;
 	QValueAxis* ch1_axisX;
 	QValueAxis* ch1_axisY;
 
 	QChart* ch2_chart;
-	QSplineSeries* ch2_lineSeries_A;
-	QSplineSeries* ch2_lineSeries_B;
+	QSplineSeries* ch2_lineSeries;
 	QValueAxis* ch2_axisX;
 	QValueAxis* ch2_axisY;
 
 	QChart* ch3_chart;
-	QSplineSeries* ch3_lineSeries_A;
-	QSplineSeries* ch3_lineSeries_B;
+	QSplineSeries* ch3_lineSeries;
 	QValueAxis* ch3_axisX;
 	QValueAxis* ch3_axisY;
 
@@ -47,6 +44,11 @@ public:
 	QByteArray buf;
 public slots:
 	void on_pbStart_clicked();
+
+
+public:
+	void initDraw();
+	void DrawLine();
 
 private:
 	//Ui::waveClass ui;

@@ -5,30 +5,17 @@
 #include "qdebug.h"
 #include "qendian.h"
 #include "qlist.h"
+#include <QtCharts/qdatetimeaxis.h>
+#include <qdatetime.h>
+#include <qvalueaxis.h>
+#include <QtCharts/qchartview.h>
 
 wave::wave(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
+	initDraw();
 
-	ch1_axisX = new QValueAxis();
-	ch1_axisY = new QValueAxis();
-	ch1_lineSeries_A = new QSplineSeries();
-	ch1_lineSeries_B = new QSplineSeries();
-	ch1_chart = new QChart();
-
-
-	ch2_axisX = new QValueAxis();
-	ch2_axisY = new QValueAxis();
-	ch2_lineSeries_A = new QSplineSeries();
-	ch2_lineSeries_B = new QSplineSeries();
-	ch2_chart = new QChart();
-
-	ch3_axisX = new QValueAxis();
-	ch3_axisY = new QValueAxis();
-	ch3_lineSeries_A = new QSplineSeries();
-	ch3_lineSeries_B = new QSplineSeries();
-	ch3_chart = new QChart();
 
 
 	serial.setPortName("COM6");
@@ -51,12 +38,104 @@ wave::wave(QWidget *parent)
 	file.open(QIODevice::WriteOnly);
 	//QByteArray da("HELLO");
 	//file.write(da);
+
+
+}
+
+wave::~wave()
+{}
+
+void wave::DrawLine()
+{
+	qDebug() << "h";
+	int number;
+	QList<QPointF> points;
+	QByteArray da = serial.readAll();
+	buf.append(da);
+	file.write(da);
+	QList<QByteArray> lines = da.split('\n');
+	for (QByteArray line : lines) {
+		file.write(line);
+		qDebug() << line;
+	}
+
+	//QDateTime currentTime = QDateTime::currentDateTime();
+	ch1_chart->axisX()->setMin(QDateTime::currentDateTime().addSecs(-60*1));
+	ch1_chart->axisX()->setMax(QDateTime::currentDateTime().addSecs(0));
+
+	//qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
+	number = qrand() % 9;
+	ch1_lineSeries->append(points);
+	//ch1_lineSeries->append(QDateTime::currentDateTime().toMSecsSinceEpoch(),rand()%20);
+	//qDebug() << "hello";
+}
+
+void wave::initDraw()
+{
+	ch1_chart = new QChart();
+	ch1_lineSeries = new QSplineSeries();
+	ch1_chart->addSeries(ch1_lineSeries);
+	ch1_chart->legend()->hide();
+	QDateTimeAxis* axisX = new QDateTimeAxis();
+	QValueAxis* axisY = new QValueAxis();
+	//ch1_axisX = new QValueAxis();
+	//ch1_axisY = new QValueAxis();
+
+	//axisX->setTitleText("Ê±¼ä(·Ö:Ãë)");
+	axisX->setTitleText("daf");
+	axisX->setGridLineVisible(false);
+	axisX->setLabelsAngle(0);
+	axisX->setTickCount(10);
+	axisX->setFormat("mm:ss");
+
+	axisY->setTickCount(10);
+	axisY->setMin(-5);
+	axisY->setMax(20);
+
+	axisX->setTitleText("X-Test");
+	axisY->setTitleText("mm:ss");
+
+	axisY->setGridLineVisible(false);
+
+	ch1_chart->addAxis(axisX, Qt::AlignBottom);
+	ch1_chart->addAxis(axisY, Qt::AlignLeft);
+
+	ch1_lineSeries->attachAxis(axisX);
+	ch1_lineSeries->attachAxis(axisY);
+
+
+
+
+	ui.gv_ch1->setChart(ch1_chart);
+	ui.gv_ch1->setRenderHint(QPainter::Antialiasing);
+
+
+
+
+//ch2_axisX = new QValueAxis();
+//ch2_axisY = new QValueAxis();
+//ch2_lineSeries_A = new QSplineSeries();
+//ch2_lineSeries_B = new QSplineSeries();
+//ch2_chart = new QChart();
+
+//ch3_axisX = new QValueAxis();
+//ch3_axisY = new QValueAxis();
+//ch3_lineSeries_A = new QSplineSeries();
+//ch3_lineSeries_B = new QSplineSeries();
+//ch3_chart = new QChart();
+
+}
+
+void wave::on_pbStart_clicked()
+{
+
 	timer.setInterval(100);
 	timer.start();
-	QObject::connect(&timer, &QTimer::timeout, [&]() {
+	QObject::connect(&timer, &QTimer::timeout, [=]() {
+		DrawLine();
 		//QByteArray data = serial.read(6 * 4096);
-		QByteArray da = serial.readAll();
-		buf.append(da);
+		//QByteArray da = serial.readAll();
+		//buf.append(da);
 		//file.write(da);
 		//QList<QByteArray> lines = data.split('\n');
 		//for (QByteArray line : lines) {
@@ -65,18 +144,9 @@ wave::wave(QWidget *parent)
 		//}
 		});
 
-}
-
-wave::~wave()
-{}
-
-
-void wave::on_pbStart_clicked()
-{
-
-	timer.stop();
-	file.write(buf);
-	file.close();
+	//timer.stop();
+	//file.write(buf);
+	//file.close();
 
 
 
