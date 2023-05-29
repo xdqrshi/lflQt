@@ -3,6 +3,7 @@
 #include "qfile.h"
 #include "qfiledialog.h"
 #include "qendian.h"
+#include "qstringlist.h"
 
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8");
@@ -68,35 +69,83 @@ void Qt5Demo::on_pbSendConfig_clicked()
 
 
     QByteArray ba;
+    //ba.clear();
     QDataStream out(&ba, QIODevice::WriteOnly);
 
-    //m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toUInt()) / (ui.le_Freq->text().toUInt()) / 360);
     m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
     m_DDSTime = vMifValue.size();
+
     m_ModeVal = 0x01bbbbbb;
-    out << qToBigEndian(m_FramHead);
-    out << qToBigEndian(m_ModeVal);
-    out << qToBigEndian(m_t1);
-    out << qToBigEndian(m_t2);
-    out << qToBigEndian(m_t3);
-    out << qToBigEndian(m_t4);
-    out << qToBigEndian(m_t5);
+    //out << qToBigEndian(m_FramHead);
+    //out << qToBigEndian(m_ModeVal);
+    //out << qToBigEndian(m_t1);
+    //out << qToBigEndian(m_t2);
+    //out << qToBigEndian(m_t3);
+    //out << qToBigEndian(m_t4);
+    //out << qToBigEndian(m_t5);
+    //m_t6 = m_DDSTime - m_t7;
+    //out << qToBigEndian(m_t6);
+    //out << qToBigEndian(m_t7);
+    //out << qToBigEndian(m_t8);
+    //out << qToBigEndian(m_PhaseDelay);
+    //out << qToBigEndian(m_CycleTimes);
+    //out << qToBigEndian(m_CycleDelay);
+    //out << qToBigEndian(m_PowerOut);
+    //out << qToBigEndian(m_Fctrl);
+    //out << qToBigEndian(m_Pctrl);
+    //out << qToBigEndian(static_cast<quint32>(vMifValue.size()));
+    //for (quint32 i = 0; i < vMifValue.size(); i++)
+    //{
+    //    out << qToBigEndian(vMifValue[i]);
+    //    //out << qToBigEndian(i);
+    //}
+    //out << qToBigEndian(m_FramTail);
+
+    //m_FramHead = qToBigEndian(m_FramHead);
+    out.writeRawData(reinterpret_cast<char*>(&m_FramHead),4);
+    //m_ModeVal = qToBigEndian(m_ModeVal);
+    out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
+    //m_t1 = qToBigEndian(m_t1);
+    out.writeRawData(reinterpret_cast<char*>(&m_t1), 4);
+    //m_t2 = qToBigEndian(m_t2);
+    out.writeRawData(reinterpret_cast<char*>(&m_t2), 4);
+    //m_t3 = qToBigEndian(m_t3);
+    out.writeRawData(reinterpret_cast<char*>(&m_t3), 4);
+    //m_t4 = qToBigEndian(m_t4);
+    out.writeRawData(reinterpret_cast<char*>(&m_t4), 4);
+    //m_t5 = qToBigEndian(m_t5);
+    out.writeRawData(reinterpret_cast<char*>(&m_t5), 4);
     m_t6 = m_DDSTime - m_t7;
-    out << qToBigEndian(m_t6);
-    out << qToBigEndian(m_t7);
-    out << qToBigEndian(m_t8);
-    out << qToBigEndian(m_PhaseDelay);
-    out << qToBigEndian(m_CycleTimes);
-    out << qToBigEndian(m_CycleDelay);
-    out << qToBigEndian(m_PowerOut);
-    out << qToBigEndian(m_Fctrl);
-    out << qToBigEndian(m_Pctrl);
-    out << qToBigEndian(static_cast<quint32>(vMifValue.size()));
-    for (int i = 0; i < vMifValue.size(); i++)
+    //m_t6 = qToBigEndian(m_t6);
+    out.writeRawData(reinterpret_cast<char*>(&m_t6), 4);
+    //m_t7 = qToBigEndian(m_t7);
+    out.writeRawData(reinterpret_cast<char*>(&m_t7), 4);
+    //m_t8 = qToBigEndian(m_t8);
+    out.writeRawData(reinterpret_cast<char*>(&m_t8), 4);
+    //m_PhaseDelay = qToBigEndian(m_PhaseDelay);
+    out.writeRawData(reinterpret_cast<char*>(&m_PhaseDelay), 4);
+    //m_CycleTimes = qToBigEndian(m_CycleTimes);
+    out.writeRawData(reinterpret_cast<char*>(&m_CycleTimes), 4);
+    //m_CycleDelay = qToBigEndian(m_CycleDelay);
+    out.writeRawData(reinterpret_cast<char*>(&m_CycleDelay), 4);
+    //m_PowerOut = qToBigEndian(m_PowerOut);
+    out.writeRawData(reinterpret_cast<char*>(&m_PowerOut), 4);
+    //m_Fctrl = qToBigEndian(m_Fctrl);
+    out.writeRawData(reinterpret_cast<char*>(&m_Fctrl), 4);
+    //m_Pctrl = qToBigEndian(m_Pctrl);
+    out.writeRawData(reinterpret_cast<char*>(&m_Pctrl), 4);
+    quint32 vMifValue_Len = static_cast<quint32>(vMifValue.size());
+    out.writeRawData(reinterpret_cast<char*>(&vMifValue_Len), 4);
+    //out.writeRawData(reinterpret_cast<char*>(&vMifValue_Len), 4);
+    for (quint32 i = 0; i < vMifValue.size(); i++)
     {
-        out << qToBigEndian(vMifValue[i]);
+        //vMifValue[i] = qToBigEndian(vMifValue[i]);
+        out.writeRawData(reinterpret_cast<char*>(&vMifValue[i]), 4);
+        //out << qToBigEndian(i);
     }
-    out << qToBigEndian(m_FramTail);
+    //m_FramTail = qToBigEndian(m_FramTail);
+    out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+
 
 
     udpSocket->writeDatagram(ba, targetAddress, targetPort);
@@ -159,27 +208,68 @@ void Qt5Demo::on_pbStartWork_clicked()
 
 void Qt5Demo::on_pbWavePreview_clicked()
 {
-    m_chart->addAxis(m_axisX, Qt::AlignLeft);
-    m_chart->addAxis(m_axisY, Qt::AlignBottom);
-    m_chart->addSeries(m_lineSeries_A);
-    m_chart->setAnimationOptions(QChart::SeriesAnimations);
-
-    for (int i = 0; i < vMifValue.size(); i++)
+    QString filePath = QFileDialog::getOpenFileName(this, "Open File", "./", "txt File (*.txt)");
+    QFile file(filePath);
+    bool flag = false;
+    bool ok;
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QPointF tmpF;
-        tmpF.setX(static_cast<qreal>(i));
-        tmpF.setY(static_cast<qreal>(vMifValue[i]));
-        m_lineSeries_A->append(tmpF);
-        qDebug() << tmpF << endl;
+        QTextStream textStream(&file);
+        QString str;
+        str = textStream.readAll();
+        QStringList numList = str.split(" ", QString::SkipEmptyParts);
+        QString outputstr;
+
+        for (size_t i = 0; i < numList.count(); i+=4) 
+        {
+            QString lineStr;
+            for (size_t j = i; j < i+4; j++)
+            {
+                lineStr += numList[j] + " ";
+            }
+            outputstr += lineStr.trimmed() + "\n";
+        }
+        QFile ofile("pp.txt");
+        if (!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) 
+        {
+            qDebug() << "open pp.txt error";
+        }
+        QTextStream out(&ofile);
+        out << outputstr;
+
+
+
+        file.close();
+        ofile.close();
+    }
+    else
+    {
+        qDebug() << "Open failed." << file.errorString();
     }
 
-    m_lineSeries_A->attachAxis(m_axisX);
-    m_lineSeries_A->attachAxis(m_axisY);
 
-    ui.graphicsView->setChart(m_chart);
-    ui.graphicsView->setRenderHint(QPainter::Antialiasing);
-    
-    qDebug() << "enter pbWavePreview";
+
+    //m_chart->addAxis(m_axisX, Qt::AlignLeft);
+    //m_chart->addAxis(m_axisY, Qt::AlignBottom);
+    //m_chart->addSeries(m_lineSeries_A);
+    //m_chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    //for (int i = 0; i < vMifValue.size(); i++)
+    //{
+    //    QPointF tmpF;
+    //    tmpF.setX(static_cast<qreal>(i));
+    //    tmpF.setY(static_cast<qreal>(vMifValue[i]));
+    //    m_lineSeries_A->append(tmpF);
+    //    qDebug() << tmpF << endl;
+    //}
+
+    //m_lineSeries_A->attachAxis(m_axisX);
+    //m_lineSeries_A->attachAxis(m_axisY);
+
+    //ui.graphicsView->setChart(m_chart);
+    //ui.graphicsView->setRenderHint(QPainter::Antialiasing);
+    //
+    //qDebug() << "enter pbWavePreview";
 }
 
 void Qt5Demo::on_Timeout()
@@ -200,7 +290,8 @@ void Qt5Demo::on_Timeout()
 
 int Qt5Demo::ParseMifFile(QString fileName,QVector<quint32> &vec)
 {
-    QFile file(fileName);
+ 
+    QFile file(filePath);
     bool flag = false;
     bool ok;
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
