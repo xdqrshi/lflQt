@@ -23,7 +23,7 @@ Qt5Demo::Qt5Demo(QWidget *parent)
     m_lineSeries_B = new QSplineSeries();
     m_chart = new QChart();
 
-    ui.le_ipAddr->setText("192.168.1.10");
+    ui.le_ipAddr->setText("192.168.3.75");
     ui.le_ipPort->setText("5001");
     timer = new QTimer();
 
@@ -198,10 +198,13 @@ void Qt5Demo::on_pbWavePreview_clicked()
 
 void Qt5Demo::on_Timeout()
 {
+    qDebug() << "timeout";
     if (udpSocket->hasPendingDatagrams())
     {
         QNetworkDatagram datagram = udpSocket->receiveDatagram();
         QByteArray recvData = datagram.data();
+        quint32 v = *(reinterpret_cast<const quint32*>(recvData.data()));
+        ui.le_ADC->setText(QString::number(v));
         qDebug() << "recvData:" << recvData;
 
     }
@@ -274,13 +277,15 @@ void Qt5Demo::on_pbOpenDevice_clicked()
     QDataStream out(&ba, QIODevice::WriteOnly);
     if (ui.pb_OpenDevice->text() == "打开设备")
     {
-        timer->start(5000);
+
         connect(timer, SIGNAL(timeout()), this, SLOT(on_Timeout()));
         targetAddress = QHostAddress(ui.le_ipAddr->text());
         targetPort = ui.le_ipPort->text().toUShort(&ok, 10);
         if (ok)
         {
             udpSocket->bind(targetAddress, targetPort);
+            timer->start(1000);
+            cmd = 0x12345678;
             out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
             udpSocket->writeDatagram(ba, targetAddress, targetPort);
         }
