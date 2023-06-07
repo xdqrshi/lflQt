@@ -233,8 +233,9 @@ void Qt5Demo::on_Timeout()
         QNetworkDatagram datagram = udpSocket->receiveDatagram();
         QByteArray recvData = datagram.data();
         quint32 v = *(reinterpret_cast<const quint32*>(recvData.data()));
+        qDebug() << "v =" << v;
         ui.le_ADC->setText(QString::number(v));
-        qDebug() << "recvData:" << recvData;
+        //qDebug() << "recvData:" << recvData;
 
     }
 
