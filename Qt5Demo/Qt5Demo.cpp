@@ -4,6 +4,8 @@
 #include "qfiledialog.h"
 #include "qendian.h"
 #include "qstringlist.h"
+#include "qnetworkinterface.h"
+#include "qhostaddress.h"
 
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8");
@@ -31,9 +33,24 @@ Qt5Demo::Qt5Demo(QWidget *parent)
     m_chart->setAnimationOptions(QChart::NoAnimation);
     //m_chart->setAnimationOptions(QChart::SeriesAnimations);
 
+    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+    for (int i = 0; i < ipAddressesList.size(); ++i) {
+        QHostAddress address = ipAddressesList.at(i);
+        if (!address.isNull() && address != QHostAddress::LocalHost &&
+            address.protocol() == QAbstractSocket::IPv4Protocol) {
+            qDebug() << "IP address:" << address.toString();
+        }
+    }
+
+
     ui.le_ipAddr->setText("192.168.3.75");
     ui.le_ipPort->setText("5001");
     timer = new QTimer();
+
+
+
+    // 打印所有 IP 地址
+
 
 
 
