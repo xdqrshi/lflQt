@@ -85,16 +85,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="wave.cpp" />
     <QtRcc Include="Qt5Demo.qrc" />
     <QtUic Include="Qt5Demo.ui" />
     <QtMoc Include="Qt5Demo.h" />
     <ClCompile Include="Qt5Demo.cpp" />
     <ClCompile Include="main.cpp" />
-    <QtUic Include="wave.ui" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="wave.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

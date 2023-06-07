@@ -40,6 +40,7 @@ public slots:
     void on_pbMifOpen_clicked();
     void on_pbOpenDevice_clicked();
     void on_Timeout();
+    void on_cbCh2_clicked(bool checked);
 public:
     QChart* m_chart;
     QSplineSeries* m_lineSeries_A;

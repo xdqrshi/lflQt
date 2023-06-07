@@ -1,5 +1,4 @@
 #include "Qt5Demo.h"
-#include "wave.h"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])

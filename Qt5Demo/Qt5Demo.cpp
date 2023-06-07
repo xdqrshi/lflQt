@@ -6,6 +6,8 @@
 #include "qstringlist.h"
 #include "qnetworkinterface.h"
 #include "qhostaddress.h"
+#include "qthread.h"
+#include "qmessagebox.h"
 
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8");
@@ -18,6 +20,11 @@ Qt5Demo::Qt5Demo(QWidget *parent)
     ui.setupUi(this);
     //connect(this, &ui.pb_SendConfig->clicked(), this, this->on_pbSendConfig());
     ParaInit();
+
+    ui.le_Freq->setEnabled(false);
+    ui.le_PhaseOffset->setEnabled(false);
+    connect(ui.cb_ch2, &QCheckBox::clicked, this, &Qt5Demo::on_cbCh2_clicked);
+
     udpSocket = new QUdpSocket(this);
     m_axisX = new QValueAxis();
     m_axisY = new QValueAxis();
@@ -59,6 +66,21 @@ Qt5Demo::Qt5Demo(QWidget *parent)
 Qt5Demo::~Qt5Demo()
 {}
 
+void Qt5Demo::on_cbCh2_clicked(bool checked)
+{
+    if (checked)
+    {
+        ui.le_Freq->setEnabled(true);
+        ui.le_PhaseOffset->setEnabled(true);
+    }
+    else
+    {
+        ui.le_Freq->setEnabled(false);
+        ui.le_PhaseOffset->setEnabled(false);
+    }
+
+
+}
 
 void Qt5Demo::on_pbSendConfig_clicked()
 {
@@ -103,102 +125,169 @@ void Qt5Demo::on_pbSendConfig_clicked()
 
 void Qt5Demo::on_pbPowerOn_clicked()
 {
-    quint32 cmd;
-    QByteArray ba;
-    QDataStream out(&ba, QIODevice::WriteOnly);
-    m_ModeVal = 0x01aaaaaa;
-    out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
-    out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
-    if (ui.pb_PowerOn->text() == "打开电源")
-    {
-        cmd = (0xeeee << 16) | (0x01 & 0xffff);
-        ui.pb_PowerOn->setText("关闭电源");
-    }
-    else if (ui.pb_PowerOn->text() == "关闭电源")
-    {
-        cmd = (0xeeee << 16) | (0x00 & 0xffff);
-        ui.pb_PowerOn->setText("打开电源");
-    }
-    
-    out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
-    out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
-    udpSocket->writeDatagram(ba, targetAddress, targetPort);
 
-    qDebug() << "enter pbPowerOn";
+    if (ui.cb_ch2->isChecked())
+    {
+        //通道1
+        {
+            quint32 cmd;
+            QByteArray ba;
+            QDataStream out(&ba, QIODevice::WriteOnly);
+            m_ModeVal = 0x01aaaaaa;
+            out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+            out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
+            if (ui.pb_PowerOn->text() == "打开电源")
+            {
+                cmd = (0xeeee << 16) | (0x01 & 0xffff);
+                ui.pb_PowerOn->setText("关闭电源");
+            }
+            else if (ui.pb_PowerOn->text() == "关闭电源")
+            {
+                cmd = (0xeeee << 16) | (0x00 & 0xffff);
+                ui.pb_PowerOn->setText("打开电源");
+            }
+            out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+            out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+            udpSocket->writeDatagram(ba, targetAddress, targetPort);
+         }
+        QThread::msleep(10);
+        {
+            //通道2
+            quint32 cmd;
+            QByteArray ba;
+            QDataStream out(&ba, QIODevice::WriteOnly);
+            m_ModeVal = 0x02aaaaaa;
+            out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+            out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
+            if (ui.pb_PowerOn->text() == "打开电源")
+            {
+                cmd = (0xeeee << 16) | (0x01 & 0xffff);
+                ui.pb_PowerOn->setText("关闭电源");
+            }
+            else if (ui.pb_PowerOn->text() == "关闭电源")
+            {
+                cmd = (0xeeee << 16) | (0x00 & 0xffff);
+                ui.pb_PowerOn->setText("打开电源");
+            }
+            out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+            out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+            udpSocket->writeDatagram(ba, targetAddress, targetPort);
+        }
+    }
+    else
+    {
+        /// <summary>
+        /// 只使用通道1
+        /// </summary>
+        quint32 cmd;
+        QByteArray ba;
+        QDataStream out(&ba, QIODevice::WriteOnly);
+        m_ModeVal = 0x01aaaaaa;
+        out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+        out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
+        if (ui.pb_PowerOn->text() == "打开电源")
+        {
+            cmd = (0xeeee << 16) | (0x01 & 0xffff);
+            ui.pb_PowerOn->setText("关闭电源");
+        }
+        else if (ui.pb_PowerOn->text() == "关闭电源")
+        {
+            cmd = (0xeeee << 16) | (0x00 & 0xffff);
+            ui.pb_PowerOn->setText("打开电源");
+        }
+        out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+        out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+        udpSocket->writeDatagram(ba, targetAddress, targetPort);
+
+
+    }
+
+   
 }
 
 void Qt5Demo::on_pbStartWork_clicked()
 {
-    quint32 cmd;
-    QByteArray ba;
-    QDataStream out(&ba, QIODevice::WriteOnly);
-    m_ModeVal = 0x02aaaaaa;
-    out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
-    out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
-    if (ui.pb_StartWork->text() == "开始工作")
+    if (ui.cb_ch2->isChecked())
     {
-        cmd = (0xdddd << 16) | (0x01 & 0xffff);
-        ui.pb_StartWork->setText("停止工作");
+        quint32 cmd;
+        QByteArray ba;
+        QDataStream out(&ba, QIODevice::WriteOnly);
+        m_ModeVal = 0x02aaaaaa;
+        out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+        out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
+        if (ui.pb_StartWork->text() == "开始工作")
+        {
+            cmd = (0xdddd << 16) | (0x01 & 0xffff);
+            ui.pb_StartWork->setText("停止工作");
+        }
+        else if (ui.pb_StartWork->text() == "停止工作")
+        {
+            cmd = (0xdddd << 16) | (0x00 & 0xffff);
+            ui.pb_StartWork->setText("开始工作");
+        }
+
+
+        out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+        out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+        udpSocket->writeDatagram(ba, targetAddress, targetPort);
+
     }
-    else if (ui.pb_StartWork->text() == "停止工作")
+    else
     {
-        cmd = (0xdddd << 16) | (0x00 & 0xffff);
-        ui.pb_StartWork->setText("开始工作");
+        quint32 cmd;
+        QByteArray ba;
+        QDataStream out(&ba, QIODevice::WriteOnly);
+        m_ModeVal = 0x01aaaaaa;
+        out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+        out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
+        if (ui.pb_StartWork->text() == "开始工作")
+        {
+            cmd = (0xdddd << 16) | (0x01 & 0xffff);
+            ui.pb_StartWork->setText("停止工作");
+        }
+        else if (ui.pb_StartWork->text() == "停止工作")
+        {
+            cmd = (0xdddd << 16) | (0x00 & 0xffff);
+            ui.pb_StartWork->setText("开始工作");
+        }
+
+        out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+        out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+        udpSocket->writeDatagram(ba, targetAddress, targetPort);
+
     }
 
 
-    out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
-    out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
-    udpSocket->writeDatagram(ba, targetAddress, targetPort);
 
 
-    qDebug() << "enter pbStartWork";
 }
 
 void Qt5Demo::on_pbWavePreview_clicked()
 {
-    //QString filePath = QFileDialog::getOpenFileName(this, "Open File", "./", "txt File (*.txt)");
-    //QFile file(filePath);
-    //bool flag = false;
-    //bool ok;
-    //if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-    //{
-    //    QTextStream textStream(&file);
-    //    QString str;
-    //    str = textStream.readAll();
-    //    QStringList numList = str.split(" ", QString::SkipEmptyParts);
-    //    QString outputstr;
+    if (ui.cb_ch2->isChecked())
+    {
+        if (ui.le_Freq->text().isEmpty() || ui.le_PhaseOffset->text().isEmpty())
+        {
+            QMessageBox::information(this, tr("警告"), tr("请填写频率和相位差"));
+            return;
+        }
 
-    //    for (size_t i = 0; i < numList.count(); i+=4) 
-    //    {
-    //        QString lineStr;
-    //        for (size_t j = i; j < i+4; j++)
-    //        {
-    //            lineStr += numList[j] + " ";
-    //        }
-    //        outputstr += lineStr.trimmed() + "\n";
-    //    }
-    //    QFile ofile("pp.txt");
-    //    if (!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) 
-    //    {
-    //        qDebug() << "open pp.txt error";
-    //    }
-    //    QTextStream out(&ofile);
-    //    out << outputstr;
+    }
+ 
 
-
-
-    //    file.close();
-    //    ofile.close();
-    //}
-    //else
-    //{
-    //    qDebug() << "Open failed." << file.errorString();
-    //}
-    m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
     ui.graphicsView->repaint();
     m_lineSeries_A->clear();
     m_lineSeries_B->clear();
+    if (ui.cb_ch2->isChecked())
+    {
+        m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
+    }
+    else
+    {
+        m_PhaseDelay = 0;
+    }
+   
+
     QList<QPointF> points_A, points_B;
     quint32 axisY_min = 0;
     quint32 axisY_max = 0;
@@ -226,7 +315,11 @@ void Qt5Demo::on_pbWavePreview_clicked()
 
     }
     m_lineSeries_A->replace(points_A);
-    m_lineSeries_B->replace(points_B);
+    if (ui.cb_ch2->isChecked())
+    {
+        m_lineSeries_B->replace(points_B);
+    }
+    
 
     m_axisX->setRange(0, static_cast<qreal>(vMifValue.size() + m_PhaseDelay));
     m_axisY->setRange(static_cast<qreal>(axisY_min), static_cast<qreal>(axisY_max));
@@ -252,7 +345,6 @@ void Qt5Demo::on_Timeout()
         quint32 v = *(reinterpret_cast<const quint32*>(recvData.data()));
         qDebug() << "v =" << v;
         ui.le_ADC->setText(QString::number(v));
-        //qDebug() << "recvData:" << recvData;
 
     }
 
