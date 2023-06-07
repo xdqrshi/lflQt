@@ -21,7 +21,15 @@ Qt5Demo::Qt5Demo(QWidget *parent)
     m_axisY = new QValueAxis();
     m_lineSeries_A = new QSplineSeries();
     m_lineSeries_B = new QSplineSeries();
+    m_lineSeries_A->setPen(QPen(Qt::red));
+    m_lineSeries_B->setPen(QPen(Qt::blue));
     m_chart = new QChart();
+    m_chart->addAxis(m_axisX, Qt::AlignBottom);
+    m_chart->addAxis(m_axisY, Qt::AlignLeft);
+    m_chart->addSeries(m_lineSeries_A);
+    m_chart->addSeries(m_lineSeries_B);
+    m_chart->setAnimationOptions(QChart::NoAnimation);
+    //m_chart->setAnimationOptions(QChart::SeriesAnimations);
 
     ui.le_ipAddr->setText("192.168.3.75");
     ui.le_ipPort->setText("5001");
@@ -132,66 +140,87 @@ void Qt5Demo::on_pbStartWork_clicked()
 
 void Qt5Demo::on_pbWavePreview_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "Open File", "./", "txt File (*.txt)");
-    QFile file(filePath);
-    bool flag = false;
-    bool ok;
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QTextStream textStream(&file);
-        QString str;
-        str = textStream.readAll();
-        QStringList numList = str.split(" ", QString::SkipEmptyParts);
-        QString outputstr;
-
-        for (size_t i = 0; i < numList.count(); i+=4) 
-        {
-            QString lineStr;
-            for (size_t j = i; j < i+4; j++)
-            {
-                lineStr += numList[j] + " ";
-            }
-            outputstr += lineStr.trimmed() + "\n";
-        }
-        QFile ofile("pp.txt");
-        if (!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) 
-        {
-            qDebug() << "open pp.txt error";
-        }
-        QTextStream out(&ofile);
-        out << outputstr;
-
-
-
-        file.close();
-        ofile.close();
-    }
-    else
-    {
-        qDebug() << "Open failed." << file.errorString();
-    }
-
-
-
-    //m_chart->addAxis(m_axisX, Qt::AlignLeft);
-    //m_chart->addAxis(m_axisY, Qt::AlignBottom);
-    //m_chart->addSeries(m_lineSeries_A);
-    //m_chart->setAnimationOptions(QChart::SeriesAnimations);
-
-    //for (int i = 0; i < vMifValue.size(); i++)
+    //QString filePath = QFileDialog::getOpenFileName(this, "Open File", "./", "txt File (*.txt)");
+    //QFile file(filePath);
+    //bool flag = false;
+    //bool ok;
+    //if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     //{
-    //    QPointF tmpF;
-    //    tmpF.setX(static_cast<qreal>(i));
-    //    tmpF.setY(static_cast<qreal>(vMifValue[i]));
-    //    m_lineSeries_A->append(tmpF);
-    //    qDebug() << tmpF << endl;
+    //    QTextStream textStream(&file);
+    //    QString str;
+    //    str = textStream.readAll();
+    //    QStringList numList = str.split(" ", QString::SkipEmptyParts);
+    //    QString outputstr;
+
+    //    for (size_t i = 0; i < numList.count(); i+=4) 
+    //    {
+    //        QString lineStr;
+    //        for (size_t j = i; j < i+4; j++)
+    //        {
+    //            lineStr += numList[j] + " ";
+    //        }
+    //        outputstr += lineStr.trimmed() + "\n";
+    //    }
+    //    QFile ofile("pp.txt");
+    //    if (!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) 
+    //    {
+    //        qDebug() << "open pp.txt error";
+    //    }
+    //    QTextStream out(&ofile);
+    //    out << outputstr;
+
+
+
+    //    file.close();
+    //    ofile.close();
     //}
+    //else
+    //{
+    //    qDebug() << "Open failed." << file.errorString();
+    //}
+    m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
+    ui.graphicsView->repaint();
+    m_lineSeries_A->clear();
+    m_lineSeries_B->clear();
+    QList<QPointF> points_A, points_B;
+    quint32 axisY_min = 0;
+    quint32 axisY_max = 0;
+    for (int i = 0; i < m_PhaseDelay; i++)
+    {
+        QPointF tmpF;
+        tmpF.setX(static_cast<qreal>(i));
+        tmpF.setY(static_cast<qreal>(8192));
+        points_B.append(tmpF);
+        //qDebug() << tmpF << endl;
+    }
 
-    //m_lineSeries_A->attachAxis(m_axisX);
-    //m_lineSeries_A->attachAxis(m_axisY);
 
-    //ui.graphicsView->setChart(m_chart);
-    //ui.graphicsView->setRenderHint(QPainter::Antialiasing);
+    for (int i = 0; i < vMifValue.size(); i++)
+    {
+        QPointF tmpF;
+        tmpF.setX(static_cast<qreal>(i));
+        tmpF.setY(static_cast<qreal>(vMifValue[i]));
+        if (vMifValue[i] > axisY_max) axisY_max = vMifValue[i];
+        if (vMifValue[i] < axisY_min) axisY_min = vMifValue[i];
+        points_A.append(tmpF);
+        tmpF.setX(static_cast<qreal>(i + m_PhaseDelay));
+        tmpF.setY(static_cast<qreal>(vMifValue[i]));
+        points_B.append(tmpF);
+
+    }
+    m_lineSeries_A->replace(points_A);
+    m_lineSeries_B->replace(points_B);
+
+    m_axisX->setRange(0, static_cast<qreal>(vMifValue.size() + m_PhaseDelay));
+    m_axisY->setRange(static_cast<qreal>(axisY_min), static_cast<qreal>(axisY_max));
+    m_lineSeries_A->attachAxis(m_axisX);
+    m_lineSeries_A->attachAxis(m_axisY);
+    m_lineSeries_B->attachAxis(m_axisX);
+    m_lineSeries_B->attachAxis(m_axisY);
+
+    ui.graphicsView->setChart(m_chart);
+    ui.graphicsView->chart()->legend()->hide();
+    ui.graphicsView->setRenderHint(QPainter::Antialiasing);
     //
     //qDebug() << "enter pbWavePreview";
 }
@@ -214,7 +243,7 @@ void Qt5Demo::on_Timeout()
 
 int Qt5Demo::ParseMifFile(QString fileName,QVector<quint32> &vec)
 {
- 
+    vec.clear();
     QFile file(filePath);
     bool flag = false;
     bool ok;
