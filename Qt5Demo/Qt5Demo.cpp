@@ -50,7 +50,7 @@ Qt5Demo::Qt5Demo(QWidget *parent)
     }
 
 
-    ui.le_ipAddr->setText("192.168.3.75");
+    ui.le_ipAddr->setText("192.168.1.10");
     ui.le_ipPort->setText("5001");
     timer = new QTimer();
 
@@ -89,8 +89,27 @@ void Qt5Demo::on_pbSendConfig_clicked()
     QByteArray ba;
     QDataStream out(&ba, QIODevice::WriteOnly);
 
-    m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
+    if (ui.cb_ch2->isChecked())
+    {
+        m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
+    }
+    else
+    {
+        m_PhaseDelay = 0;
+    }
+
+    //m_PhaseDelay = static_cast<quint32>(m_Fclk * (ui.le_PhaseOffset->text().toDouble()) / (ui.le_Freq->text().toDouble()) / 360);
     m_DDSTime = vMifValue.size();
+    //乘100的原因是FPGA给的是100MHz的时钟，1个钟就是0.01us，所以把输入的us值换成时钟数需要乘100;
+    m_CycleDelay = ui.le_Delay->text().toUInt()*100; 
+    if (ui.cb_ch2->isChecked())
+    {
+        m_PowerOut = ((ui.le_Power->text().toUInt())&0x00ffffff) | (2<<24);
+    }
+    else
+    {
+        m_PowerOut = ((ui.le_Power->text().toUInt()) & 0x00ffffff) | (1 << 24);
+    }
 
     m_ModeVal = 0x01bbbbbb;
 
