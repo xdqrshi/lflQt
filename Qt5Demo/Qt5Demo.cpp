@@ -147,50 +147,67 @@ void Qt5Demo::on_pbPowerOn_clicked()
 
     if (ui.cb_ch2->isChecked())
     {
-        //通道1
+        if (ui.pb_PowerOn->text() == "打开电源")
         {
-            quint32 cmd;
-            QByteArray ba;
-            QDataStream out(&ba, QIODevice::WriteOnly);
-            m_ModeVal = 0x01aaaaaa;
-            out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
-            out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
-            if (ui.pb_PowerOn->text() == "打开电源")
+            //通道1
             {
+                quint32 cmd;
+                QByteArray ba;
+                QDataStream out(&ba, QIODevice::WriteOnly);
+                m_ModeVal = 0x01aaaaaa;
+                out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+                out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
                 cmd = (0xeeee << 16) | (0x01 & 0xffff);
-                ui.pb_PowerOn->setText("关闭电源");
+                out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+                out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+                udpSocket->writeDatagram(ba, targetAddress, targetPort);
             }
-            else if (ui.pb_PowerOn->text() == "关闭电源")
-            {
-                cmd = (0xeeee << 16) | (0x00 & 0xffff);
-                ui.pb_PowerOn->setText("打开电源");
-            }
-            out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
-            out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
-            udpSocket->writeDatagram(ba, targetAddress, targetPort);
-         }
-        QThread::msleep(10);
-        {
+            QThread::msleep(10);
             //通道2
-            quint32 cmd;
-            QByteArray ba;
-            QDataStream out(&ba, QIODevice::WriteOnly);
-            m_ModeVal = 0x02aaaaaa;
-            out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
-            out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
-            if (ui.pb_PowerOn->text() == "打开电源")
             {
+                quint32 cmd;
+                QByteArray ba;
+                QDataStream out(&ba, QIODevice::WriteOnly);
+                m_ModeVal = 0x02aaaaaa;
+                out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+                out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
                 cmd = (0xeeee << 16) | (0x01 & 0xffff);
-                ui.pb_PowerOn->setText("关闭电源");
+                out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+                out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+                udpSocket->writeDatagram(ba, targetAddress, targetPort);
             }
-            else if (ui.pb_PowerOn->text() == "关闭电源")
+            ui.pb_PowerOn->setText("关闭电源");
+        }
+        else if (ui.pb_PowerOn->text() == "关闭电源")
+        {
+            //通道1
             {
+                quint32 cmd;
+                QByteArray ba;
+                QDataStream out(&ba, QIODevice::WriteOnly);
+                m_ModeVal = 0x01aaaaaa;
+                out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+                out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
                 cmd = (0xeeee << 16) | (0x00 & 0xffff);
-                ui.pb_PowerOn->setText("打开电源");
+                out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+                out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+                udpSocket->writeDatagram(ba, targetAddress, targetPort);
             }
-            out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
-            out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
-            udpSocket->writeDatagram(ba, targetAddress, targetPort);
+            QThread::msleep(10);
+            //通道2
+            {
+                quint32 cmd;
+                QByteArray ba;
+                QDataStream out(&ba, QIODevice::WriteOnly);
+                m_ModeVal = 0x02aaaaaa;
+                out.writeRawData(reinterpret_cast<char*>(&m_FramHead), 4);
+                out.writeRawData(reinterpret_cast<char*>(&m_ModeVal), 4);
+                cmd = (0xeeee << 16) | (0x00 & 0xffff);
+                out.writeRawData(reinterpret_cast<char*>(&cmd), 4);
+                out.writeRawData(reinterpret_cast<char*>(&m_FramTail), 4);
+                udpSocket->writeDatagram(ba, targetAddress, targetPort);
+            }
+            ui.pb_PowerOn->setText("打开电源");
         }
     }
     else
